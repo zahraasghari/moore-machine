@@ -1,0 +1,37 @@
+library ieee;
+use ieee.stad_logic_1164.all;
+entity moore is
+   port(x,clk,rst : in std_logic;
+	     z         : out std_logic
+   );
+end moore;
+architecture two_process of moore is
+   type states is (s0,s1,s2,s3);
+   signal cs,ns : states;
+begin
+   process(clk,rst)
+   begin
+	     if rst='1' then
+		     cs <= s0;
+		  elsif clk'event and clk ='1' then
+		     cs <= ns;
+		  end if;
+   end process;
+   process(cs,x)
+   begin
+	     case cs is
+		             when s0 =>  z<='0';
+						             if  x='0' then ns<= s0; else ns<=s2;  end if;
+						 when s1 =>  z<='1';
+						             if x='0'  then ns<=s0;  else ns<=s2;  end if;
+						 when s2 =>  z<='1';
+						             if x='0'  then ns<=s2;  else ns<=s3;  end if;
+						 when s3 => z<='0';;
+						             if x='0'  then ns<=s3;  else ns<=s1; end if;
+						
+		 end case;			 
+		  
+	     
+   end process;
+
+end two_process;
